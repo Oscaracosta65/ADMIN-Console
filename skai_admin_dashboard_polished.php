@@ -1105,13 +1105,21 @@ $healthChecks = array(
 ?>
 <style>
 .skai-admin-wrap {
-    max-width: 1500px;
-    margin: 24px auto 48px auto;
-    padding: 0 16px;
+    max-width: 1540px;
+    margin: 24px auto 56px auto;
+    padding: 0 20px;
     font-family: Arial, Helvetica, sans-serif;
     color: #111827;
+    background: #f1f5f9;
 }
-.skai-header { margin-bottom: 18px; }
+.skai-header {
+    margin-bottom: 20px;
+    padding: 28px 32px;
+    background: #ffffff;
+    border: 1px solid #dbe6f0;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
 .skai-eyebrow {
     display: inline-block;
     margin-bottom: 10px;
@@ -1124,12 +1132,38 @@ $healthChecks = array(
 }
 .skai-title { margin: 0 0 8px 0; font-size: 34px; line-height: 1.15; font-weight: 800; color: #0f172a; }
 .skai-subtitle { margin: 0; color: #475569; font-size: 15px; line-height: 1.5; max-width: 900px; }
-.skai-section { margin: 0 0 22px 0; }
-.skai-section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-.skai-section-title { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 800; color: #0f172a; }
-.skai-section-note { margin: 0; color: #64748b; font-size: 13px; }
-.skai-grid-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 24px 0 28px 0; }
-.skai-card { background: #ffffff; border: 1px solid #dbe2ea; border-radius: 16px; padding: 16px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04); }
+.skai-section {
+    margin: 0 0 20px 0;
+    background: #ffffff;
+    border: 1px solid #dbe6f0;
+    border-radius: 20px;
+    padding: 24px 28px 28px 28px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+}
+.skai-section-head {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f1f5f9;
+}
+.skai-section-title-row { display: flex; align-items: center; gap: 12px; margin-bottom: 5px; }
+.skai-section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+    border: 1px solid #bfdbfe;
+}
+.skai-section-title { margin: 0; font-size: 20px; line-height: 1.2; font-weight: 800; color: #0f172a; }
+.skai-section-note { margin: 0 0 0 46px; color: #64748b; font-size: 13px; }
+.skai-grid-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 20px 0 24px 0; }
+.skai-card { background: #ffffff; border: 1px solid #dbe2ea; border-radius: 16px; padding: 16px; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04); }
 .skai-kpi-group { margin: 0 0 18px 0; }
 .skai-kpi-group:last-child { margin-bottom: 0; }
 .skai-kpi-group-title { margin: 0 0 10px 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; }
@@ -1138,8 +1172,8 @@ $healthChecks = array(
 .skai-kpi-meta { font-size: 13px; color: #475569; }
 .skai-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .skai-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.skai-panel { background: #ffffff; border: 1px solid #dbe2ea; border-radius: 18px; padding: 18px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04); }
-.skai-panel h3 { margin: 0 0 4px 0; font-size: 17px; line-height: 1.25; font-weight: 800; color: #0f172a; }
+.skai-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px 20px; }
+.skai-panel h3 { margin: 0 0 8px 0; font-size: 15px; line-height: 1.25; font-weight: 800; color: #0f172a; padding-bottom: 10px; border-bottom: 1px solid #e9eef5; }
 .skai-panel-desc { margin: 0 0 14px 0; color: #64748b; font-size: 13px; line-height: 1.45; }
 .skai-bars { display: flex; flex-direction: column; gap: 12px; }
 .skai-bar-row { display: flex; flex-direction: column; gap: 6px; }
@@ -1150,18 +1184,22 @@ $healthChecks = array(
 .skai-bar-fill { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%); }
 .skai-table-wrap { overflow-x: auto; }
 .skai-table { width: 100%; border-collapse: collapse; min-width: 700px; }
-.skai-table thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; padding: 12px 10px; border-bottom: 1px solid #dbe2ea; background: #f8fafc; }
-.skai-table tbody td { padding: 12px 10px; border-bottom: 1px solid #edf2f7; font-size: 13px; color: #1e293b; vertical-align: top; line-height: 1.45; }
-.skai-table tbody tr:hover { background: #f8fbff; }
+.skai-table thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; padding: 11px 10px; border-bottom: 1px solid #dbe2ea; background: #f1f5f9; }
+.skai-table tbody td { padding: 11px 10px; border-bottom: 1px solid #edf2f7; font-size: 13px; color: #1e293b; vertical-align: top; line-height: 1.45; }
+.skai-table tbody tr:nth-child(even) { background: #fafbfd; }
+.skai-table tbody tr:hover { background: #eff6ff; }
 .skai-tag { display: inline-block; padding: 4px 8px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; font-size: 12px; font-weight: 700; }
 .skai-muted { color: #64748b; }
 .skai-empty { padding: 16px; border: 1px dashed #cbd5e1; border-radius: 12px; color: #64748b; font-size: 14px; background: #f8fafc; }
-.skai-health-list { display: flex; flex-direction: column; gap: 10px; }
-.skai-health-row { display: flex; justify-content: space-between; gap: 16px; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc; }
-.skai-health-label { font-size: 14px; color: #334155; font-weight: 700; }
-.skai-health-value { font-size: 14px; color: #0f172a; font-weight: 800; }
+.skai-health-list { display: flex; flex-direction: column; gap: 8px; }
+.skai-health-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; }
+.skai-health-row::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #94a3b8; flex-shrink: 0; }
+.skai-health-ok::before   { background: #16a34a; }
+.skai-health-warn::before { background: #d97706; }
+.skai-health-label { font-size: 13px; color: #334155; font-weight: 600; flex: 1; }
+.skai-health-value { font-size: 14px; color: #0f172a; font-weight: 800; white-space: nowrap; }
 .skai-footnote { margin-top: 18px; padding: 14px 16px; border: 1px solid #dbe2ea; border-radius: 14px; background: #f8fafc; color: #475569; font-size: 13px; line-height: 1.5; }
-.skai-section-divider { height: 1px; background: #e2e8f0; margin: 36px 0; }
+.skai-section-divider { display: none; }
 .skai-insight-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 0 0 28px 0; }
 .skai-insight-card { padding: 16px 18px; border-radius: 14px; border: 1px solid #e2e8f0; border-left-width: 4px; }
 .skai-insight-positive { border-left-color: #16a34a; background: #f0fdf4; }
@@ -1171,9 +1209,10 @@ $healthChecks = array(
 .skai-insight-value { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 4px; line-height: 1.35; }
 .skai-insight-desc  { font-size: 12px; color: #64748b; line-height: 1.4; }
 .skai-kpi-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 0 0 20px 0; }
-.skai-kpi-mini { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; }
-.skai-kpi-mini-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
-.skai-kpi-mini-value { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 4px; }
+.skai-kpi-mini { background: #ffffff; border: 1px solid #dbe6f0; border-top: 3px solid #2563eb; border-radius: 12px; padding: 14px 16px; }
+.skai-kpi-mini-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.skai-kpi-mini-value { font-size: 26px; font-weight: 800; color: #0f172a; line-height: 1; margin-bottom: 4px; }
+.skai-kpi-mini-value-sm { font-size: 16px; }
 .skai-kpi-mini-sub   { font-size: 12px; color: #64748b; }
 .skai-health-ok   .skai-health-value { color: #16a34a; }
 .skai-health-warn .skai-health-value { color: #d97706; }
@@ -1181,9 +1220,9 @@ $healthChecks = array(
 .skai-list-plain { display: flex; flex-direction: column; gap: 6px; }
 .skai-list-item  { padding: 8px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; color: #334155; }
 .skai-derived-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0 0 18px 0; }
-.skai-derived-item  { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; }
+.skai-derived-item  { background: #ffffff; border: 1px solid #e2e8f0; border-left: 3px solid #6366f1; border-radius: 10px; padding: 12px 14px; }
 .skai-derived-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
-.skai-derived-value { font-size: 20px; font-weight: 800; color: #1e293b; }
+.skai-derived-value { font-size: 22px; font-weight: 800; color: #1e293b; }
 .skai-tag-warn { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #fef3c7; color: #92400e; font-size: 12px; font-weight: 700; }
 .skai-tag-ok   { display: inline-block; padding: 3px 8px; border-radius: 999px; background: #dcfce7; color: #166534; font-size: 12px; font-weight: 700; }
 .skai-stat-card { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 14px; padding: 20px; text-align: center; }
@@ -1218,7 +1257,10 @@ $healthChecks = array(
 <!-- Section 1: Executive Overview -->
 <div class="skai-section">
     <div class="skai-section-head">
-        <h2 class="skai-section-title">1. Executive Overview</h2>
+        <div class="skai-section-title-row">
+            <span class="skai-section-num">01</span>
+            <h2 class="skai-section-title">Executive Overview</h2>
+        </div>
         <p class="skai-section-note">Top-level intelligence signals and KPIs across the platform.</p>
     </div>
     <?php skaiAdminRenderInsightCards($topInsightCards); ?>
@@ -1285,7 +1327,7 @@ $healthChecks = array(
         </div>
         <div class="skai-kpi-mini">
             <div class="skai-kpi-mini-label">Last Refresh</div>
-            <div class="skai-kpi-mini-value" style="font-size:16px;"><?php echo date('H:i'); ?></div>
+            <div class="skai-kpi-mini-value skai-kpi-mini-value-sm"><?php echo date('H:i'); ?></div>
             <div class="skai-kpi-mini-sub"><?php echo date('Y-m-d'); ?> server time</div>
         </div>
     </div>
@@ -1296,7 +1338,10 @@ $healthChecks = array(
 <!-- Section 2: User and Membership Insights -->
 <div class="skai-section">
     <div class="skai-section-head">
-        <h2 class="skai-section-title">2. User and Membership Insights</h2>
+        <div class="skai-section-title-row">
+            <span class="skai-section-num">02</span>
+            <h2 class="skai-section-title">User and Membership Insights</h2>
+        </div>
         <p class="skai-section-note">Engagement metrics, derived user stats, and top prediction contributors.</p>
     </div>
     <div class="skai-derived-grid">
@@ -1366,7 +1411,10 @@ $healthChecks = array(
 <!-- Section 3: Prediction Insights -->
 <div class="skai-section">
     <div class="skai-section-head">
-        <h2 class="skai-section-title">3. Prediction Insights</h2>
+        <div class="skai-section-title-row">
+            <span class="skai-section-num">03</span>
+            <h2 class="skai-section-title">Prediction Insights</h2>
+        </div>
         <p class="skai-section-note">Breakdown of prediction volume, types, sources, and families.</p>
     </div>
     <div class="skai-kpi-row">
@@ -1429,7 +1477,10 @@ $healthChecks = array(
 <!-- Section 4: Lottery Insights -->
 <div class="skai-section">
     <div class="skai-section-head">
-        <h2 class="skai-section-title">4. Lottery Insights</h2>
+        <div class="skai-section-title-row">
+            <span class="skai-section-num">04</span>
+            <h2 class="skai-section-title">Lottery Insights</h2>
+        </div>
         <p class="skai-section-note">Lottery activity, prediction distribution, and engagement coverage.</p>
     </div>
     <div class="skai-kpi-row">
@@ -1520,7 +1571,10 @@ $healthChecks = array(
 <!-- Section 5: Accuracy and Verification Insights -->
 <div class="skai-section">
     <div class="skai-section-head">
-        <h2 class="skai-section-title">5. Accuracy and Verification Insights</h2>
+        <div class="skai-section-title-row">
+            <span class="skai-section-num">05</span>
+            <h2 class="skai-section-title">Accuracy and Verification Insights</h2>
+        </div>
         <p class="skai-section-note">Prediction outcome tracking, verification coverage, and hit rates.</p>
     </div>
     <div class="skai-derived-grid">
@@ -1588,7 +1642,10 @@ $healthChecks = array(
 <!-- Section 6: Learning and SKAI Insights -->
 <div class="skai-section">
     <div class="skai-section-head">
-        <h2 class="skai-section-title">6. Learning and SKAI Insights</h2>
+        <div class="skai-section-title-row">
+            <span class="skai-section-num">06</span>
+            <h2 class="skai-section-title">Learning and SKAI Insights</h2>
+        </div>
         <p class="skai-section-note">SKAI engine learning table activity and data volume tracking.</p>
     </div>
     <div class="skai-kpi-row">
@@ -1640,7 +1697,10 @@ $healthChecks = array(
 <!-- Section 7: System Health and Data Quality -->
 <div class="skai-section">
     <div class="skai-section-head">
-        <h2 class="skai-section-title">7. System Health and Data Quality</h2>
+        <div class="skai-section-title-row">
+            <span class="skai-section-num">07</span>
+            <h2 class="skai-section-title">System Health and Data Quality</h2>
+        </div>
         <p class="skai-section-note">Platform health checks, classification quality, and data coverage signals.</p>
     </div>
     <div class="skai-grid-2">
@@ -1702,7 +1762,10 @@ $healthChecks = array(
 <!-- Section 8: Technical Detail -->
 <div class="skai-section">
     <div class="skai-section-head">
-        <h2 class="skai-section-title">8. Technical Detail</h2>
+        <div class="skai-section-title-row">
+            <span class="skai-section-num">08</span>
+            <h2 class="skai-section-title">Technical Detail</h2>
+        </div>
         <p class="skai-section-note">SKAI engine run modes, strategies, risk profiles, and table-level data breakdown.</p>
     </div>
     <div class="skai-grid-3">
