@@ -1,4 +1,4 @@
-{source}
+[[source]]
 <?php
 defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
@@ -1826,4 +1826,4 @@ $healthChecks = array(
 </div>
 
 </div>
-{/source}
+[[/source]]
