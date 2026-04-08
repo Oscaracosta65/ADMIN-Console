@@ -848,6 +848,171 @@ if (skaiAdminTableExists($db, $tblUsers) && $userLoginCol !== '') {
     );
 }
 
+// ── Paid Subscriber Engagement: additional column/table detection ────────────
+$subPlanIdCol         = skaiAdminHasColumn($subCols, 'plan_id')          ? 'plan_id'          : '';
+$subUserIdCol         = skaiAdminHasColumn($subCols, 'user_id')          ? 'user_id'          : '';
+$subEmailCol          = skaiAdminHasColumn($subCols, 'email')            ? 'email'            : '';
+$subSubscriberNameCol = skaiAdminHasColumn($subCols, 'subscriber_name')  ? 'subscriber_name'  : '';
+$subFromDateCol       = skaiAdminHasColumn($subCols, 'from_date')        ? 'from_date'        : '';
+
+$tblSubPlans  = skaiAdminResolveTable($db, array('#__osmembership_plans', 'jos9d_osmembership_plans'), '#__osmembership_plans');
+$planCols     = skaiAdminGetColumns($db, $tblSubPlans);
+$planNameCol  = skaiAdminHasColumn($planCols, 'name') ? 'name' : '';
+
+// Whether we can discriminate plan types (requires plans table + plan_id linkage)
+$canFilterByPlan = skaiAdminTableExists($db, $tblSubPlans)
+    && $subPlanIdCol !== ''
+    && $planNameCol  !== ''
+    && $subUserIdCol !== '';
+
+// Clause that identifies a PAID (non-Lottery-Enthusiast) active subscription
+$paidSubJoin      = '';
+$paidSubWhere     = $subsActiveClause;
+$paidSubPlanExpr  = "'' AS plan_name";
+$freeSubWhere     = '1=1';
+
+if ($canFilterByPlan) {
+    $paidSubJoin     = "INNER JOIN " . $db->quoteName($tblSubPlans) . " AS pl ON pl.id = s." . $db->quoteName($subPlanIdCol);
+    $paidSubWhere    = $subsActiveClause . " AND LOWER(pl." . $db->quoteName($planNameCol) . ") NOT LIKE '%lottery%enthusiast%'";
+    $paidSubPlanExpr = "pl." . $db->quoteName($planNameCol) . " AS plan_name";
+    $freeSubWhere    = "LOWER(pl." . $db->quoteName($planNameCol) . ") LIKE '%lottery%enthusiast%'";
+}
+
+// ── Summary: paid active subscriptions (non-free) ───────────────────────────
+$summary['paid_active_subs'] = 0;
+if (skaiAdminTableExists($db, $tblSubs) && $subUserIdCol !== '') {
+    if ($canFilterByPlan) {
+        $summary['paid_active_subs'] = (int) skaiAdminLoadScalar(
+            $db,
+            "SELECT COUNT(s.id)
+             FROM " . $db->quoteName($tblSubs) . " AS s
+             " . $paidSubJoin . "
+             WHERE " . $paidSubWhere
+        );
+    } else {
+        $summary['paid_active_subs'] = (int) $summary['active_subscriptions'];
+    }
+}
+
+// ── Summary: users with NO active paid subscription (free-only / unsubscribed)
+$summary['free_only_users'] = 0;
+if (skaiAdminTableExists($db, $tblUsers) && skaiAdminTableExists($db, $tblSubs) && $subUserIdCol !== '') {
+    if ($canFilterByPlan) {
+        $summary['free_only_users'] = (int) skaiAdminLoadScalar(
+            $db,
+            "SELECT COUNT(DISTINCT u.id)
+             FROM " . $db->quoteName($tblUsers) . " AS u
+             WHERE u.id NOT IN (
+                 SELECT DISTINCT s." . $db->quoteName($subUserIdCol) . "
+                 FROM " . $db->quoteName($tblSubs) . " AS s
+                 " . $paidSubJoin . "
+                 WHERE " . $paidSubWhere . "
+                   AND s." . $db->quoteName($subUserIdCol) . " IS NOT NULL
+             )"
+        );
+    } else {
+        $summary['free_only_users'] = max(0, (int) $summary['total_users'] - (int) $summary['active_subscriptions']);
+    }
+}
+
+// ── Active paid subscribers with prediction counts and last-login ─────────────
+$activePaidSubscribers = array();
+if (skaiAdminTableExists($db, $tblSubs) && skaiAdminTableExists($db, $tblUsers) && $subUserIdCol !== '') {
+    $selectSubCols = array(
+        "u.id AS user_id",
+        "u.name AS user_name",
+        "u.email AS email",
+        $paidSubPlanExpr,
+        $subToDateCol  !== '' ? "s." . $db->quoteName($subToDateCol)  . " AS sub_expiry"  : "NULL AS sub_expiry",
+        $subFromDateCol !== '' ? "s." . $db->quoteName($subFromDateCol) . " AS sub_start" : "NULL AS sub_start",
+        $userLoginCol  !== '' ? "u." . $db->quoteName($userLoginCol)  . " AS last_login"  : "NULL AS last_login",
+        "COUNT(DISTINCT p.id) AS total_predictions",
+    );
+    $predJoinOn = skaiAdminHasColumn($predCols, 'user_id') ? 'p.user_id = u.id' : '1=0';
+    $activePaidSubscribers = skaiAdminLoadAssocList(
+        $db,
+        "SELECT " . implode(", ", $selectSubCols) . "
+         FROM " . $db->quoteName($tblSubs) . " AS s
+         " . $paidSubJoin . "
+         LEFT JOIN " . $db->quoteName($tblUsers) . " AS u ON u.id = s." . $db->quoteName($subUserIdCol) . "
+         LEFT JOIN " . $db->quoteName($tblPredictions) . " AS p ON " . $predJoinOn . "
+         WHERE " . $paidSubWhere . "
+         GROUP BY s.id, u.id, u.name, u.email"
+        . ($canFilterByPlan ? ", pl." . $db->quoteName($planNameCol) : "")
+        . ($subToDateCol   !== '' ? ", s." . $db->quoteName($subToDateCol)   : "")
+        . ($subFromDateCol !== '' ? ", s." . $db->quoteName($subFromDateCol) : "")
+        . ($userLoginCol   !== '' ? ", u." . $db->quoteName($userLoginCol)   : "") . "
+         ORDER BY total_predictions DESC, last_login DESC
+         LIMIT 30"
+    );
+}
+
+// ── Paid subscribers with ZERO predictions (churn risk) ──────────────────────
+$paidSubNoPreds = array_values(array_filter($activePaidSubscribers, function ($r) {
+    return (int) $r['total_predictions'] === 0;
+}));
+
+// ── Predictions per subscription plan (bar chart) ────────────────────────────
+$predsByPlan = array();
+if ($canFilterByPlan && skaiAdminTableExists($db, $tblSubs) && skaiAdminTableExists($db, $tblPredictions) && $subUserIdCol !== '' && skaiAdminHasColumn($predCols, 'user_id')) {
+    $predsByPlan = skaiAdminNormalizeBreakdownRows(
+        skaiAdminLoadAssocList(
+            $db,
+            "SELECT pl." . $db->quoteName($planNameCol) . " AS label,
+                    COUNT(DISTINCT p.id) AS total
+             FROM " . $db->quoteName($tblSubs) . " AS s
+             " . $paidSubJoin . "
+             INNER JOIN " . $db->quoteName($tblPredictions) . " AS p ON p.user_id = s." . $db->quoteName($subUserIdCol) . "
+             WHERE " . $paidSubWhere . "
+             GROUP BY pl." . $db->quoteName($planNameCol) . "
+             ORDER BY total DESC
+             LIMIT 10"
+        ),
+        'label', 'total', 'plan'
+    );
+}
+
+// ── Free-only (Lottery Enthusiast / no paid sub) user list ───────────────────
+$freeOnlyUserList = array();
+if (skaiAdminTableExists($db, $tblUsers) && $subUserIdCol !== '') {
+    $freeLoginSel  = $userLoginCol    !== '' ? "u." . $db->quoteName($userLoginCol)    . " AS last_login"   : "NULL AS last_login";
+    $freeRegSel    = $userRegisterCol !== '' ? "u." . $db->quoteName($userRegisterCol) . " AS register_date" : "NULL AS register_date";
+    if ($canFilterByPlan && skaiAdminTableExists($db, $tblSubs)) {
+        $freeOnlyUserList = skaiAdminLoadAssocList(
+            $db,
+            "SELECT u.id AS user_id, u.name AS user_name, u.email AS email,
+                    " . $freeLoginSel . ", " . $freeRegSel . "
+             FROM " . $db->quoteName($tblUsers) . " AS u
+             WHERE u.id NOT IN (
+                 SELECT DISTINCT s." . $db->quoteName($subUserIdCol) . "
+                 FROM " . $db->quoteName($tblSubs) . " AS s
+                 " . $paidSubJoin . "
+                 WHERE " . $paidSubWhere . "
+                   AND s." . $db->quoteName($subUserIdCol) . " IS NOT NULL
+             )
+             ORDER BY last_login DESC
+             LIMIT 25"
+        );
+    } elseif (skaiAdminTableExists($db, $tblUsers)) {
+        $freeOnlyUserList = skaiAdminLoadAssocList(
+            $db,
+            "SELECT u.id AS user_id, u.name AS user_name, u.email AS email,
+                    " . $freeLoginSel . ", " . $freeRegSel . "
+             FROM " . $db->quoteName($tblUsers) . " AS u
+             WHERE u.id NOT IN (
+                 SELECT DISTINCT s." . $db->quoteName($subUserIdCol) . "
+                 FROM " . $db->quoteName($tblSubs) . " AS s
+                 WHERE " . $subsActiveClause . "
+                   AND s." . $db->quoteName($subUserIdCol) . " IS NOT NULL
+             )
+             ORDER BY last_login DESC
+             LIMIT 25"
+        );
+    }
+}
+
+$summary['paid_subs_no_preds'] = count($paidSubNoPreds);
+
 $skaiCounts = array();
 foreach ($tblSkaiTables as $skaiTable) {
     if (skaiAdminTableExists($db, $skaiTable)) {
@@ -1821,6 +1986,146 @@ $healthChecks = array(
                 and use payment_amount if available, otherwise amount. All figures are direct database aggregates
                 with no caching.
             [[/div]]
+        [[/div]]
+    [[/div]]
+[[/div]]
+
+[[div class="skai-section-divider"]][[/div]]
+
+<!-- Section 9: Paid Subscriber & User Engagement Insights -->
+[[div class="skai-section"]]
+    [[div class="skai-section-head"]]
+        [[div class="skai-section-title-row"]]
+            [[span class="skai-section-num"]]09[[/span]]
+            [[h2 class="skai-section-title"]]Paid Subscriber & User Engagement Insights[[/h2]]
+        [[/div]]
+        [[p class="skai-section-note"]]Who holds an active paid subscription, what they are doing, who is dormant, and who has never upgraded beyond Lottery Enthusiast.[[/p]]
+    [[/div]]
+
+    [[div class="skai-derived-grid"]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Active Paid Subscriptions[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminN($summary['paid_active_subs']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Free-Only / No Paid Sub Users[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminN($summary['free_only_users']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Paid Subs With Zero Predictions[[/div]]
+            [[div class="skai-derived-value skai-derived-value--warn"]]<?php echo skaiAdminN($summary['paid_subs_no_preds']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Paid Sub Penetration[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminPercent($summary['paid_active_subs'], $summary['total_users']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Total Users[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminN($summary['total_users']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Avg Preds / Paid Subscriber[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminRatio($summary['total_predictions'], $summary['paid_active_subs']); ?>[[/div]]
+        [[/div]]
+    [[/div]]
+
+    [[div class="skai-grid-2"]]
+        [[div class="skai-panel"]]
+            [[h3]]Active Paid Subscribers[[/h3]]
+            [[p class="skai-panel-desc"]]Users with a currently active non-free subscription — showing plan, prediction activity, and last site login. Sorted by prediction count descending.[[/p]]
+            <?php
+            skaiAdminRenderSimpleTable(
+                array('Name', 'Email', 'Plan', 'Predictions', 'Last Login', 'Sub Expires'),
+                $activePaidSubscribers,
+                array(
+                    function($r) { return skaiAdminE(isset($r['user_name']) ? $r['user_name'] : '—'); },
+                    function($r) { return '[[span class="skai-muted" style="font-size:11px;"]]' . skaiAdminE(isset($r['email']) ? $r['email'] : '—') . '[[/span]]'; },
+                    function($r) {
+                        $plan = isset($r['plan_name']) && $r['plan_name'] !== '' ? $r['plan_name'] : '—';
+                        return '[[span class="skai-badge skai-badge--plan"]]' . skaiAdminE($plan) . '[[/span]]';
+                    },
+                    function($r) {
+                        $n = (int) $r['total_predictions'];
+                        $cls = $n > 0 ? 'skai-val--active' : 'skai-val--zero';
+                        return '[[strong class="' . $cls . '"]]' . skaiAdminN($n) . '[[/strong]]';
+                    },
+                    function($r) {
+                        $val = isset($r['last_login']) ? substr((string) $r['last_login'], 0, 10) : '—';
+                        return '[[span class="skai-muted"]]' . skaiAdminE($val) . '[[/span]]';
+                    },
+                    function($r) {
+                        $val = isset($r['sub_expiry']) ? substr((string) $r['sub_expiry'], 0, 10) : '—';
+                        return '[[span class="skai-muted"]]' . skaiAdminE($val) . '[[/span]]';
+                    },
+                )
+            );
+            ?>
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Paid Subscribers With No Predictions[[/h3]]
+            [[p class="skai-panel-desc"]]Active paid subscribers who have never saved a prediction — highest churn and re-engagement risk. Sorted by subscription expiry (soonest first).[[/p]]
+            <?php
+            if (empty($paidSubNoPreds)) {
+                echo '[[div class="skai-empty"]]All paid subscribers have at least one prediction — great engagement signal.[[/div]]';
+            } else {
+                skaiAdminRenderSimpleTable(
+                    array('Name', 'Email', 'Plan', 'Last Login', 'Sub Expires'),
+                    $paidSubNoPreds,
+                    array(
+                        function($r) { return skaiAdminE(isset($r['user_name']) ? $r['user_name'] : '—'); },
+                        function($r) { return '[[span class="skai-muted" style="font-size:11px;"]]' . skaiAdminE(isset($r['email']) ? $r['email'] : '—') . '[[/span]]'; },
+                        function($r) {
+                            $plan = isset($r['plan_name']) && $r['plan_name'] !== '' ? $r['plan_name'] : '—';
+                            return '[[span class="skai-badge skai-badge--warn"]]' . skaiAdminE($plan) . '[[/span]]';
+                        },
+                        function($r) {
+                            $val = isset($r['last_login']) ? substr((string) $r['last_login'], 0, 10) : 'Never';
+                            return '[[span class="skai-muted"]]' . skaiAdminE($val) . '[[/span]]';
+                        },
+                        function($r) {
+                            $val = isset($r['sub_expiry']) ? substr((string) $r['sub_expiry'], 0, 10) : '—';
+                            return '[[span class="skai-muted"]]' . skaiAdminE($val) . '[[/span]]';
+                        },
+                    )
+                );
+            }
+            ?>
+        [[/div]]
+    [[/div]]
+
+    [[div class="skai-grid-2" style="margin-top:16px;"]]
+        [[div class="skai-panel"]]
+            [[h3]]Predictions by Subscription Plan[[/h3]]
+            [[p class="skai-panel-desc"]]Total predictions saved by users grouped by their active paid subscription plan — reveals which plan tier is most engaged.[[/p]]
+            <?php
+            if (empty($predsByPlan)) {
+                echo '[[div class="skai-empty"]]Plan breakdown unavailable — plan data requires the osmembership_plans table with plan_id linkage.[[/div]]';
+            } else {
+                skaiAdminRenderBarsWithPct($predsByPlan, 'label', 'total', $summary['total_predictions']);
+            }
+            ?>
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Free-Only Users (No Active Paid Sub)[[/h3]]
+            [[p class="skai-panel-desc"]]Users who have never held an active paid subscription — Lottery Enthusiast-only or completely unsubscribed. Sorted by most-recent login.[[/p]]
+            <?php
+            skaiAdminRenderSimpleTable(
+                array('Name', 'Email', 'Last Login', 'Registered'),
+                $freeOnlyUserList,
+                array(
+                    function($r) { return skaiAdminE(isset($r['user_name']) ? $r['user_name'] : '—'); },
+                    function($r) { return '[[span class="skai-muted" style="font-size:11px;"]]' . skaiAdminE(isset($r['email']) ? $r['email'] : '—') . '[[/span]]'; },
+                    function($r) {
+                        $val = isset($r['last_login']) ? substr((string) $r['last_login'], 0, 10) : 'Never';
+                        return '[[span class="skai-muted"]]' . skaiAdminE($val) . '[[/span]]';
+                    },
+                    function($r) {
+                        $val = isset($r['register_date']) ? substr((string) $r['register_date'], 0, 10) : '—';
+                        return '[[span class="skai-muted"]]' . skaiAdminE($val) . '[[/span]]';
+                    },
+                )
+            );
+            ?>
         [[/div]]
     [[/div]]
 [[/div]]
