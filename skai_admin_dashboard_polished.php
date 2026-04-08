@@ -233,49 +233,49 @@ function skaiAdminRenderBarsFriendly($rows, $labelKey, $valueKey, $formatterCall
 {
     $max = skaiAdminSafeMaxForBars($rows, $valueKey);
     if (empty($rows)) {
-        echo '<div class="skai-empty">No data yet.</div>';
+        echo '[[div class="skai-empty"]]No data yet.[[/div]]';
         return;
     }
-    echo '<div class="skai-bars">';
+    echo '[[div class="skai-bars"]]';
     foreach ($rows as $row) {
         $label = isset($row[$labelKey]) ? $row[$labelKey] : '';
         $value = isset($row[$valueKey]) ? (float) $row[$valueKey] : 0;
         $width = max(3, (int) round(($value / $max) * 100));
-        echo '<div class="skai-bar-row">';
-        echo '<div class="skai-bar-top">';
-        echo '<div class="skai-bar-label" title="' . skaiAdminE($label) . '">' . skaiAdminE($label) . '</div>';
-        echo '<div class="skai-bar-value">' . call_user_func($formatterCallback, $value) . '</div>';
-        echo '</div>';
-        echo '<div class="skai-bar-track"><span class="skai-bar-fill" style="width:' . (int) $width . '%;"></span></div>';
-        echo '</div>';
+        echo '[[div class="skai-bar-row"]]';
+        echo '[[div class="skai-bar-top"]]';
+        echo '[[div class="skai-bar-label" title="' . skaiAdminE($label) . '"]]' . skaiAdminE($label) . '[[/div]]';
+        echo '[[div class="skai-bar-value"]]' . call_user_func($formatterCallback, $value) . '[[/div]]';
+        echo '[[/div]]';
+        echo '[[div class="skai-bar-track"]][[span class="skai-bar-fill" style="width:' . (int) $width . '%;"]][[/span]][[/div]]';
+        echo '[[/div]]';
     }
-    echo '</div>';
+    echo '[[/div]]';
 }
 
 function skaiAdminRenderSimpleTable($headers, $rows, $map)
 {
     if (empty($rows)) {
-        echo '<div class="skai-empty">No data yet.</div>';
+        echo '[[div class="skai-empty"]]No data yet.[[/div]]';
         return;
     }
-    echo '<div class="skai-table-wrap">';
-    echo '<table class="skai-table">';
-    echo '<thead><tr>';
+    echo '[[div class="skai-table-wrap"]]';
+    echo '[[table class="skai-table"]]';
+    echo '[[thead]][[tr]]';
     foreach ($headers as $header) {
-        echo '<th>' . skaiAdminE($header) . '</th>';
+        echo '[[th]]' . skaiAdminE($header) . '[[/th]]';
     }
-    echo '</tr></thead>';
-    echo '<tbody>';
+    echo '[[/tr]][[/thead]]';
+    echo '[[tbody]]';
     foreach ($rows as $row) {
-        echo '<tr>';
+        echo '[[tr]]';
         foreach ($map as $cellCallback) {
-            echo '<td>' . call_user_func($cellCallback, $row) . '</td>';
+            echo '[[td]]' . call_user_func($cellCallback, $row) . '[[/td]]';
         }
-        echo '</tr>';
+        echo '[[/tr]]';
     }
-    echo '</tbody>';
-    echo '</table>';
-    echo '</div>';
+    echo '[[/tbody]]';
+    echo '[[/table]]';
+    echo '[[/div]]';
 }
 
 function skaiAdminRatio($part, $whole, $decimals = 2)
@@ -390,44 +390,44 @@ function skaiAdminRenderBarsWithPct($rows, $labelKey, $valueKey, $total)
     $max   = skaiAdminSafeMaxForBars($rows, $valueKey);
     $total = (float) $total;
     if (empty($rows)) {
-        echo '<div class="skai-empty">No data yet.</div>';
+        echo '[[div class="skai-empty"]]No data yet.[[/div]]';
         return;
     }
-    echo '<div class="skai-bars">';
+    echo '[[div class="skai-bars"]]';
     foreach ($rows as $row) {
         $label = isset($row[$labelKey]) ? $row[$labelKey] : '';
         $value = isset($row[$valueKey]) ? (float) $row[$valueKey] : 0;
         $width = max(3, (int) round(($value / $max) * 100));
         $pct   = ($total > 0) ? number_format(($value / $total) * 100, 1) . '%' : '';
-        $badge = skaiAdminN($value) . ($pct !== '' ? ' <span class="skai-bar-pct">(' . skaiAdminE($pct) . ')</span>' : '');
-        echo '<div class="skai-bar-row">';
-        echo '<div class="skai-bar-top">';
-        echo '<div class="skai-bar-label" title="' . skaiAdminE($label) . '">' . skaiAdminE($label) . '</div>';
-        echo '<div class="skai-bar-value">' . $badge . '</div>';
-        echo '</div>';
-        echo '<div class="skai-bar-track"><span class="skai-bar-fill" style="width:' . (int) $width . '%;"></span></div>';
-        echo '</div>';
+        $badge = skaiAdminN($value) . ($pct !== '' ? ' [[span class="skai-bar-pct"]](' . skaiAdminE($pct) . ')[[/span]]' : '');
+        echo '[[div class="skai-bar-row"]]';
+        echo '[[div class="skai-bar-top"]]';
+        echo '[[div class="skai-bar-label" title="' . skaiAdminE($label) . '"]]' . skaiAdminE($label) . '[[/div]]';
+        echo '[[div class="skai-bar-value"]]' . $badge . '[[/div]]';
+        echo '[[/div]]';
+        echo '[[div class="skai-bar-track"]][[span class="skai-bar-fill" style="width:' . (int) $width . '%;"]][[/span]][[/div]]';
+        echo '[[/div]]';
     }
-    echo '</div>';
+    echo '[[/div]]';
 }
 
 function skaiAdminRenderInsightCards($cards)
 {
     if (empty($cards)) { return; }
-    echo '<div class="skai-insight-row">';
+    echo '[[div class="skai-insight-row"]]';
     foreach ($cards as $card) {
         $title = isset($card['title']) ? $card['title'] : '';
         $value = isset($card['value']) ? $card['value'] : '';
         $desc  = isset($card['desc'])  ? $card['desc']  : '';
         $flag  = isset($card['flag'])  ? $card['flag']  : 'neutral';
         $cls   = 'skai-insight-card skai-insight-' . skaiAdminE($flag);
-        echo '<div class="' . $cls . '">';
-        echo '<div class="skai-insight-title">' . skaiAdminE($title) . '</div>';
-        echo '<div class="skai-insight-value">' . skaiAdminE($value) . '</div>';
-        echo '<div class="skai-insight-desc">'  . skaiAdminE($desc)  . '</div>';
-        echo '</div>';
+        echo '[[div class="' . $cls . '"]]';
+        echo '[[div class="skai-insight-title"]]' . skaiAdminE($title) . '[[/div]]';
+        echo '[[div class="skai-insight-value"]]' . skaiAdminE($value) . '[[/div]]';
+        echo '[[div class="skai-insight-desc"]]'  . skaiAdminE($desc)  . '[[/div]]';
+        echo '[[/div]]';
     }
-    echo '</div>';
+    echo '[[/div]]';
 }
 
 $tblUsers = skaiAdminResolveTable($db, array('#__users', 'jos9d_users'), '#__users');
@@ -1103,7 +1103,7 @@ $healthChecks = array(
     array('label' => 'Empty SKAI tracking tables',           'value' => $skaiEmptyTableCount,                   'flag' => $skaiEmptyTableCount > 0 ? 'warn' : 'ok'),
 );
 ?>
-<style>
+[[style]]
 .skai-admin-wrap {
     max-width: 1540px;
     margin: 24px auto 56px auto;
@@ -1243,282 +1243,282 @@ $healthChecks = array(
     .skai-derived-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .skai-title { font-size: 28px; }
 }
-</style>
-<div class="skai-admin-wrap">
+[[/style]]
+[[div class="skai-admin-wrap"]]
 
-<div class="skai-header">
-    <span class="skai-eyebrow">SKAI Admin Intelligence Dashboard</span>
-    <h1 class="skai-title">Platform Intelligence Overview</h1>
-    <p class="skai-subtitle">Real-time analytics across users, predictions, lotteries, subscriptions, and SKAI learning data. All metrics are derived live from the database at render time.</p>
-</div>
+[[div class="skai-header"]]
+    [[span class="skai-eyebrow"]]SKAI Admin Intelligence Dashboard[[/span]]
+    [[h1 class="skai-title"]]Platform Intelligence Overview[[/h1]]
+    [[p class="skai-subtitle"]]Real-time analytics across users, predictions, lotteries, subscriptions, and SKAI learning data. All metrics are derived live from the database at render time.[[/p]]
+[[/div]]
 
-<div class="skai-section-divider"></div>
+[[div class="skai-section-divider"]][[/div]]
 
 <!-- Section 1: Executive Overview -->
-<div class="skai-section">
-    <div class="skai-section-head">
-        <div class="skai-section-title-row">
-            <span class="skai-section-num">01</span>
-            <h2 class="skai-section-title">Executive Overview</h2>
-        </div>
-        <p class="skai-section-note">Top-level intelligence signals and KPIs across the platform.</p>
-    </div>
+[[div class="skai-section"]]
+    [[div class="skai-section-head"]]
+        [[div class="skai-section-title-row"]]
+            [[span class="skai-section-num"]]01[[/span]]
+            [[h2 class="skai-section-title"]]Executive Overview[[/h2]]
+        [[/div]]
+        [[p class="skai-section-note"]]Top-level intelligence signals and KPIs across the platform.[[/p]]
+    [[/div]]
     <?php skaiAdminRenderInsightCards($topInsightCards); ?>
-    <div class="skai-grid-cards">
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Total Users</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['total_users']); ?></div>
-            <div class="skai-kpi-mini-sub">All registered accounts</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Active Users (30d)</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['users_active_30d']); ?></div>
-            <div class="skai-kpi-mini-sub"><?php echo skaiAdminE($derived['activity_rate_pct']); ?> of total</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">New Users (30d)</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['new_users_30d']); ?></div>
-            <div class="skai-kpi-mini-sub">Registered in past 30 days</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Total Predictions</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['total_predictions']); ?></div>
-            <div class="skai-kpi-mini-sub">All saved predictions</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Predictions Today</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['predictions_today']); ?></div>
-            <div class="skai-kpi-mini-sub">Saved in last 24 hours</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Predictions (7d)</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['predictions_7d']); ?></div>
-            <div class="skai-kpi-mini-sub">Saved in last 7 days</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Verified Predictions</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['verified_predictions']); ?></div>
-            <div class="skai-kpi-mini-sub"><?php echo skaiAdminE($derived['verification_rate_pct']); ?> coverage</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Full Hits</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['full_hits']); ?></div>
-            <div class="skai-kpi-mini-sub"><?php echo skaiAdminE($derived['full_hit_rate_pct']); ?> of verified</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Active Lotteries (30d)</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['active_lotteries_30d']); ?></div>
-            <div class="skai-kpi-mini-sub">With predictions in 30 days</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Total Lotteries</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['total_lotteries']); ?></div>
-            <div class="skai-kpi-mini-sub">Configured on platform</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Active Subscriptions</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['active_subscriptions']); ?></div>
-            <div class="skai-kpi-mini-sub"><?php echo skaiAdminE($derived['sub_penetration_pct']); ?> user penetration</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Total Revenue</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminMoney($summary['total_revenue']); ?></div>
-            <div class="skai-kpi-mini-sub">Active subscriptions total</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Last Refresh</div>
-            <div class="skai-kpi-mini-value skai-kpi-mini-value-sm"><?php echo date('H:i'); ?></div>
-            <div class="skai-kpi-mini-sub"><?php echo date('Y-m-d'); ?> server time</div>
-        </div>
-    </div>
-</div>
+    [[div class="skai-grid-cards"]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Total Users[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['total_users']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]All registered accounts[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Active Users (30d)[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['users_active_30d']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]<?php echo skaiAdminE($derived['activity_rate_pct']); ?> of total[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]New Users (30d)[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['new_users_30d']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Registered in past 30 days[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Total Predictions[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['total_predictions']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]All saved predictions[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Predictions Today[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['predictions_today']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Saved in last 24 hours[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Predictions (7d)[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['predictions_7d']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Saved in last 7 days[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Verified Predictions[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['verified_predictions']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]<?php echo skaiAdminE($derived['verification_rate_pct']); ?> coverage[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Full Hits[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['full_hits']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]<?php echo skaiAdminE($derived['full_hit_rate_pct']); ?> of verified[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Active Lotteries (30d)[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['active_lotteries_30d']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]With predictions in 30 days[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Total Lotteries[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['total_lotteries']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Configured on platform[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Active Subscriptions[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['active_subscriptions']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]<?php echo skaiAdminE($derived['sub_penetration_pct']); ?> user penetration[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Total Revenue[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminMoney($summary['total_revenue']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Active subscriptions total[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Last Refresh[[/div]]
+            [[div class="skai-kpi-mini-value skai-kpi-mini-value-sm"]]<?php echo date('H:i'); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]<?php echo date('Y-m-d'); ?> server time[[/div]]
+        [[/div]]
+    [[/div]]
+[[/div]]
 
-<div class="skai-section-divider"></div>
+[[div class="skai-section-divider"]][[/div]]
 
 <!-- Section 2: User and Membership Insights -->
-<div class="skai-section">
-    <div class="skai-section-head">
-        <div class="skai-section-title-row">
-            <span class="skai-section-num">02</span>
-            <h2 class="skai-section-title">User and Membership Insights</h2>
-        </div>
-        <p class="skai-section-note">Engagement metrics, derived user stats, and top prediction contributors.</p>
-    </div>
-    <div class="skai-derived-grid">
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Activity Rate (30d)</div>
-            <div class="skai-derived-value"><?php echo skaiAdminE($derived['activity_rate_pct']); ?></div>
-        </div>
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Subscription Penetration</div>
-            <div class="skai-derived-value"><?php echo skaiAdminE($derived['sub_penetration_pct']); ?></div>
-        </div>
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Avg Preds / Active User</div>
-            <div class="skai-derived-value"><?php echo skaiAdminE($derived['avg_preds_active_user']); ?></div>
-        </div>
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Avg Preds / Total User</div>
-            <div class="skai-derived-value"><?php echo skaiAdminE($derived['avg_preds_total_user']); ?></div>
-        </div>
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Inactive Users (30d)</div>
-            <div class="skai-derived-value"><?php echo skaiAdminN($derived['users_inactive_30d']); ?></div>
-        </div>
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Users With No Predictions</div>
-            <div class="skai-derived-value"><?php echo skaiAdminN($usersNoPredictions); ?></div>
-        </div>
-    </div>
-    <div class="skai-grid-2">
-        <div class="skai-panel">
-            <h3>Top Users by Prediction Count</h3>
-            <p class="skai-panel-desc">Users who have saved the most predictions on the platform.</p>
+[[div class="skai-section"]]
+    [[div class="skai-section-head"]]
+        [[div class="skai-section-title-row"]]
+            [[span class="skai-section-num"]]02[[/span]]
+            [[h2 class="skai-section-title"]]User and Membership Insights[[/h2]]
+        [[/div]]
+        [[p class="skai-section-note"]]Engagement metrics, derived user stats, and top prediction contributors.[[/p]]
+    [[/div]]
+    [[div class="skai-derived-grid"]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Activity Rate (30d)[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminE($derived['activity_rate_pct']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Subscription Penetration[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminE($derived['sub_penetration_pct']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Avg Preds / Active User[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminE($derived['avg_preds_active_user']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Avg Preds / Total User[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminE($derived['avg_preds_total_user']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Inactive Users (30d)[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminN($derived['users_inactive_30d']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Users With No Predictions[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminN($usersNoPredictions); ?>[[/div]]
+        [[/div]]
+    [[/div]]
+    [[div class="skai-grid-2"]]
+        [[div class="skai-panel"]]
+            [[h3]]Top Users by Prediction Count[[/h3]]
+            [[p class="skai-panel-desc"]]Users who have saved the most predictions on the platform.[[/p]]
             <?php
             skaiAdminRenderSimpleTable(
                 array('User', 'Username', 'Predictions', 'Last Activity'),
                 $topUsers,
                 array(
                     function($r) { return skaiAdminE($r['user_name']); },
-                    function($r) { return '<span class="skai-muted">' . skaiAdminE($r['username']) . '</span>'; },
-                    function($r) { return '<strong>' . skaiAdminN($r['total_predictions']) . '</strong>'; },
-                    function($r) { return '<span class="skai-muted">' . skaiAdminE(isset($r['last_prediction_at']) ? substr((string)$r['last_prediction_at'], 0, 10) : '') . '</span>'; },
+                    function($r) { return '[[span class="skai-muted"]]' . skaiAdminE($r['username']) . '[[/span]]'; },
+                    function($r) { return '[[strong]]' . skaiAdminN($r['total_predictions']) . '[[/strong]]'; },
+                    function($r) { return '[[span class="skai-muted"]]' . skaiAdminE(isset($r['last_prediction_at']) ? substr((string)$r['last_prediction_at'], 0, 10) : '') . '[[/span]]'; },
                 )
             );
             ?>
-        </div>
-        <div class="skai-panel">
-            <h3>Recent Logins</h3>
-            <p class="skai-panel-desc">Most recently active users by last login timestamp.</p>
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Recent Logins[[/h3]]
+            [[p class="skai-panel-desc"]]Most recently active users by last login timestamp.[[/p]]
             <?php
             skaiAdminRenderSimpleTable(
                 array('Name', 'Username', 'Last Login', 'Registered'),
                 $recentLogins,
                 array(
                     function($r) { return skaiAdminE($r['name']); },
-                    function($r) { return '<span class="skai-muted">' . skaiAdminE($r['username']) . '</span>'; },
+                    function($r) { return '[[span class="skai-muted"]]' . skaiAdminE($r['username']) . '[[/span]]'; },
                     function($r) { return skaiAdminE(isset($r['lastvisitDate']) ? substr((string)$r['lastvisitDate'], 0, 16) : ''); },
-                    function($r) { return '<span class="skai-muted">' . skaiAdminE(isset($r['registerDate']) ? substr((string)$r['registerDate'], 0, 10) : '') . '</span>'; },
+                    function($r) { return '[[span class="skai-muted"]]' . skaiAdminE(isset($r['registerDate']) ? substr((string)$r['registerDate'], 0, 10) : '') . '[[/span]]'; },
                 )
             );
             ?>
-        </div>
-    </div>
-</div>
+        [[/div]]
+    [[/div]]
+[[/div]]
 
-<div class="skai-section-divider"></div>
+[[div class="skai-section-divider"]][[/div]]
 
 <!-- Section 3: Prediction Insights -->
-<div class="skai-section">
-    <div class="skai-section-head">
-        <div class="skai-section-title-row">
-            <span class="skai-section-num">03</span>
-            <h2 class="skai-section-title">Prediction Insights</h2>
-        </div>
-        <p class="skai-section-note">Breakdown of prediction volume, types, sources, and families.</p>
-    </div>
-    <div class="skai-kpi-row">
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Total Predictions</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['total_predictions']); ?></div>
-            <div class="skai-kpi-mini-sub">All time</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Today</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['predictions_today']); ?></div>
-            <div class="skai-kpi-mini-sub">Last 24 hours</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Last 7 Days</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['predictions_7d']); ?></div>
-            <div class="skai-kpi-mini-sub">Rolling 7-day</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Last 30 Days</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['predictions_30d']); ?></div>
-            <div class="skai-kpi-mini-sub">Rolling 30-day</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Avg / Day (30d)</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminE($derived['preds_per_day_30d']); ?></div>
-            <div class="skai-kpi-mini-sub">Daily average</div>
-        </div>
-    </div>
-    <div class="skai-grid-2">
-        <div class="skai-panel">
-            <h3>Prediction Types</h3>
-            <p class="skai-panel-desc">Distribution of prediction types with inference fallback from pick size and family fields.</p>
+[[div class="skai-section"]]
+    [[div class="skai-section-head"]]
+        [[div class="skai-section-title-row"]]
+            [[span class="skai-section-num"]]03[[/span]]
+            [[h2 class="skai-section-title"]]Prediction Insights[[/h2]]
+        [[/div]]
+        [[p class="skai-section-note"]]Breakdown of prediction volume, types, sources, and families.[[/p]]
+    [[/div]]
+    [[div class="skai-kpi-row"]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Total Predictions[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['total_predictions']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]All time[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Today[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['predictions_today']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Last 24 hours[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Last 7 Days[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['predictions_7d']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Rolling 7-day[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Last 30 Days[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['predictions_30d']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Rolling 30-day[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Avg / Day (30d)[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminE($derived['preds_per_day_30d']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Daily average[[/div]]
+        [[/div]]
+    [[/div]]
+    [[div class="skai-grid-2"]]
+        [[div class="skai-panel"]]
+            [[h3]]Prediction Types[[/h3]]
+            [[p class="skai-panel-desc"]]Distribution of prediction types with inference fallback from pick size and family fields.[[/p]]
             <?php skaiAdminRenderBarsWithPct($predictionTypes, 'label', 'total', $summary['total_predictions']); ?>
-        </div>
-        <div class="skai-panel">
-            <h3>Prediction Sources</h3>
-            <p class="skai-panel-desc">Origin of predictions - AI, SKAI engine, manual entry, or other sources.</p>
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Prediction Sources[[/h3]]
+            [[p class="skai-panel-desc"]]Origin of predictions - AI, SKAI engine, manual entry, or other sources.[[/p]]
             <?php skaiAdminRenderBarsWithPct($predictionSources, 'label', 'total', $summary['total_predictions']); ?>
-        </div>
-        <div class="skai-panel">
-            <h3>Prediction Families</h3>
-            <p class="skai-panel-desc">Daily vs standard lottery family breakdown with inference from pick size and type.</p>
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Prediction Families[[/h3]]
+            [[p class="skai-panel-desc"]]Daily vs standard lottery family breakdown with inference from pick size and type.[[/p]]
             <?php skaiAdminRenderBarsWithPct($predictionFamilies, 'label', 'total', $summary['total_predictions']); ?>
-        </div>
-        <div class="skai-panel">
-            <h3>Avg Predictions Per Active Lottery</h3>
-            <p class="skai-panel-desc">Prediction density across active lotteries in the past 30 days.</p>
-            <div class="skai-stat-card">
-                <div class="skai-stat-card-value"><?php echo skaiAdminRatio($summary['predictions_30d'], max(1, $summary['active_lotteries_30d'])); ?></div>
-                <div class="skai-stat-card-label">Avg Predictions Per Active Lottery (30d)</div>
-                <div class="skai-stat-card-note"><?php echo skaiAdminN($summary['predictions_30d']); ?> predictions across <?php echo skaiAdminN($summary['active_lotteries_30d']); ?> active lotteries</div>
-            </div>
-        </div>
-    </div>
-</div>
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Avg Predictions Per Active Lottery[[/h3]]
+            [[p class="skai-panel-desc"]]Prediction density across active lotteries in the past 30 days.[[/p]]
+            [[div class="skai-stat-card"]]
+                [[div class="skai-stat-card-value"]]<?php echo skaiAdminRatio($summary['predictions_30d'], max(1, $summary['active_lotteries_30d'])); ?>[[/div]]
+                [[div class="skai-stat-card-label"]]Avg Predictions Per Active Lottery (30d)[[/div]]
+                [[div class="skai-stat-card-note"]]<?php echo skaiAdminN($summary['predictions_30d']); ?> predictions across <?php echo skaiAdminN($summary['active_lotteries_30d']); ?> active lotteries[[/div]]
+            [[/div]]
+        [[/div]]
+    [[/div]]
+[[/div]]
 
-<div class="skai-section-divider"></div>
+[[div class="skai-section-divider"]][[/div]]
 
 <!-- Section 4: Lottery Insights -->
-<div class="skai-section">
-    <div class="skai-section-head">
-        <div class="skai-section-title-row">
-            <span class="skai-section-num">04</span>
-            <h2 class="skai-section-title">Lottery Insights</h2>
-        </div>
-        <p class="skai-section-note">Lottery activity, prediction distribution, and engagement coverage.</p>
-    </div>
-    <div class="skai-kpi-row">
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Total Lotteries</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['total_lotteries']); ?></div>
-            <div class="skai-kpi-mini-sub">Configured on platform</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Active (30d)</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($summary['active_lotteries_30d']); ?></div>
-            <div class="skai-kpi-mini-sub">Had predictions in 30 days</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Activity Rate</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminE($derived['lottery_activity_rate']); ?></div>
-            <div class="skai-kpi-mini-sub">Lotteries with recent activity</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Zero-Prediction Lotteries</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($derived['lotteries_zero_preds']); ?></div>
-            <div class="skai-kpi-mini-sub">No predictions ever saved</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Distinct Lotteries Used</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($distinctPredLotteries); ?></div>
-            <div class="skai-kpi-mini-sub">Referenced in predictions table</div>
-        </div>
-    </div>
-    <div class="skai-grid-3">
-        <div class="skai-panel">
-            <h3>Top Lotteries by Volume</h3>
-            <p class="skai-panel-desc">Lotteries with the most saved predictions on the platform.</p>
+[[div class="skai-section"]]
+    [[div class="skai-section-head"]]
+        [[div class="skai-section-title-row"]]
+            [[span class="skai-section-num"]]04[[/span]]
+            [[h2 class="skai-section-title"]]Lottery Insights[[/h2]]
+        [[/div]]
+        [[p class="skai-section-note"]]Lottery activity, prediction distribution, and engagement coverage.[[/p]]
+    [[/div]]
+    [[div class="skai-kpi-row"]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Total Lotteries[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['total_lotteries']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Configured on platform[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Active (30d)[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($summary['active_lotteries_30d']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Had predictions in 30 days[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Activity Rate[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminE($derived['lottery_activity_rate']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Lotteries with recent activity[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Zero-Prediction Lotteries[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($derived['lotteries_zero_preds']); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]No predictions ever saved[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Distinct Lotteries Used[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($distinctPredLotteries); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Referenced in predictions table[[/div]]
+        [[/div]]
+    [[/div]]
+    [[div class="skai-grid-3"]]
+        [[div class="skai-panel"]]
+            [[h3]]Top Lotteries by Volume[[/h3]]
+            [[p class="skai-panel-desc"]]Lotteries with the most saved predictions on the platform.[[/p]]
             <?php skaiAdminRenderBarsFriendly($topLotteries, 'lottery_name', 'total_predictions', 'skaiAdminN'); ?>
-        </div>
-        <div class="skai-panel" style="grid-column: span 2;">
-            <h3>Lottery Performance Table</h3>
-            <p class="skai-panel-desc">Predictions, full hits, near hits, and hit ratio for each lottery.</p>
+        [[/div]]
+        [[div class="skai-panel" style="grid-column: span 2;"]]
+            [[h3]]Lottery Performance Table[[/h3]]
+            [[p class="skai-panel-desc"]]Predictions, full hits, near hits, and hit ratio for each lottery.[[/p]]
             <?php
             skaiAdminRenderSimpleTable(
                 array('Lottery', 'Predictions', 'Full Hits', 'Near Hits', 'Hit Ratio'),
@@ -1526,18 +1526,18 @@ $healthChecks = array(
                 array(
                     function($r) { return skaiAdminE($r['lottery_name']); },
                     function($r) { return skaiAdminN($r['total_predictions']); },
-                    function($r) { return '<strong>' . skaiAdminN($r['full_hits']) . '</strong>'; },
+                    function($r) { return '[[strong]]' . skaiAdminN($r['full_hits']) . '[[/strong]]'; },
                     function($r) { return skaiAdminN($r['near_hits']); },
-                    function($r) { return '<span class="skai-tag">' . skaiAdminE($r['hit_ratio_pct']) . '</span>'; },
+                    function($r) { return '[[span class="skai-tag"]]' . skaiAdminE($r['hit_ratio_pct']) . '[[/span]]'; },
                 )
             );
             ?>
-        </div>
-    </div>
+        [[/div]]
+    [[/div]]
     <?php if (!empty($heavyUnverifiedLotteries)): ?>
-    <div class="skai-panel" style="margin-top:16px;">
-        <h3>Lotteries With High Unverified Rate</h3>
-        <p class="skai-panel-desc">Lotteries with 5+ predictions but less than 30% verification coverage.</p>
+    [[div class="skai-panel" style="margin-top:16px;"]]
+        [[h3]]Lotteries With High Unverified Rate[[/h3]]
+        [[p class="skai-panel-desc"]]Lotteries with 5+ predictions but less than 30% verification coverage.[[/p]]
         <?php
         skaiAdminRenderSimpleTable(
             array('Lottery', 'Total Predictions', 'Verified', 'Unverified', 'Verified %'),
@@ -1546,78 +1546,78 @@ $healthChecks = array(
                 function($r) { return skaiAdminE($r['lottery_name']); },
                 function($r) { return skaiAdminN($r['total_predictions']); },
                 function($r) { return skaiAdminN($r['verified_count']); },
-                function($r) { return '<span class="skai-tag-warn">' . skaiAdminN($r['unverified_count']) . '</span>'; },
+                function($r) { return '[[span class="skai-tag-warn"]]' . skaiAdminN($r['unverified_count']) . '[[/span]]'; },
                 function($r) { return skaiAdminE($r['verified_pct']); },
             )
         );
         ?>
-    </div>
+    [[/div]]
     <?php endif; ?>
     <?php if (!empty($lotteryZeroPreds)): ?>
-    <div class="skai-panel" style="margin-top:16px;">
-        <h3>Lotteries With No Predictions</h3>
-        <p class="skai-panel-desc">These lotteries have been configured but no users have saved predictions for them.</p>
-        <div class="skai-list-plain">
+    [[div class="skai-panel" style="margin-top:16px;"]]
+        [[h3]]Lotteries With No Predictions[[/h3]]
+        [[p class="skai-panel-desc"]]These lotteries have been configured but no users have saved predictions for them.[[/p]]
+        [[div class="skai-list-plain"]]
             <?php foreach ($lotteryZeroPreds as $lzp): ?>
-            <div class="skai-list-item"><?php echo skaiAdminE(skaiAdminCleanLotteryName($lzp['lottery_name'])); ?></div>
+            [[div class="skai-list-item"]]<?php echo skaiAdminE(skaiAdminCleanLotteryName($lzp['lottery_name'])); ?>[[/div]]
             <?php endforeach; ?>
-        </div>
-    </div>
+        [[/div]]
+    [[/div]]
     <?php endif; ?>
-</div>
+[[/div]]
 
-<div class="skai-section-divider"></div>
+[[div class="skai-section-divider"]][[/div]]
 
 <!-- Section 5: Accuracy and Verification Insights -->
-<div class="skai-section">
-    <div class="skai-section-head">
-        <div class="skai-section-title-row">
-            <span class="skai-section-num">05</span>
-            <h2 class="skai-section-title">Accuracy and Verification Insights</h2>
-        </div>
-        <p class="skai-section-note">Prediction outcome tracking, verification coverage, and hit rates.</p>
-    </div>
-    <div class="skai-derived-grid">
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Verification Rate</div>
-            <div class="skai-derived-value"><?php echo skaiAdminE($derived['verification_rate_pct']); ?></div>
-        </div>
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Records Verified</div>
-            <div class="skai-derived-value"><?php echo skaiAdminN($summary['verified_predictions']); ?></div>
-        </div>
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Awaiting Verification</div>
-            <div class="skai-derived-value"><?php echo skaiAdminN($derived['awaiting_verification']); ?></div>
-        </div>
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Stale Records</div>
-            <div class="skai-derived-value"><?php echo skaiAdminN($staleRecordsCount); ?></div>
-        </div>
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Full Hit Rate</div>
-            <div class="skai-derived-value"><?php echo skaiAdminE($derived['full_hit_rate_pct']); ?></div>
-        </div>
-        <div class="skai-derived-item">
-            <div class="skai-derived-label">Near Hit Rate</div>
-            <div class="skai-derived-value"><?php echo skaiAdminE($derived['near_hit_rate_pct']); ?></div>
-        </div>
-    </div>
-    <div class="skai-grid-2">
-        <div class="skai-panel">
-            <h3>Top Prediction Types by Full Hits</h3>
-            <p class="skai-panel-desc">Which prediction types are generating the most full matches.</p>
+[[div class="skai-section"]]
+    [[div class="skai-section-head"]]
+        [[div class="skai-section-title-row"]]
+            [[span class="skai-section-num"]]05[[/span]]
+            [[h2 class="skai-section-title"]]Accuracy and Verification Insights[[/h2]]
+        [[/div]]
+        [[p class="skai-section-note"]]Prediction outcome tracking, verification coverage, and hit rates.[[/p]]
+    [[/div]]
+    [[div class="skai-derived-grid"]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Verification Rate[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminE($derived['verification_rate_pct']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Records Verified[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminN($summary['verified_predictions']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Awaiting Verification[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminN($derived['awaiting_verification']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Stale Records[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminN($staleRecordsCount); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Full Hit Rate[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminE($derived['full_hit_rate_pct']); ?>[[/div]]
+        [[/div]]
+        [[div class="skai-derived-item"]]
+            [[div class="skai-derived-label"]]Near Hit Rate[[/div]]
+            [[div class="skai-derived-value"]]<?php echo skaiAdminE($derived['near_hit_rate_pct']); ?>[[/div]]
+        [[/div]]
+    [[/div]]
+    [[div class="skai-grid-2"]]
+        [[div class="skai-panel"]]
+            [[h3]]Top Prediction Types by Full Hits[[/h3]]
+            [[p class="skai-panel-desc"]]Which prediction types are generating the most full matches.[[/p]]
             <?php skaiAdminRenderBarsFriendly($topTypesByFullHit, 'label', 'total', 'skaiAdminN'); ?>
-        </div>
-        <div class="skai-panel">
-            <h3>Top Prediction Types by Near Hits</h3>
-            <p class="skai-panel-desc">Which prediction types are generating the most near-match outcomes.</p>
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Top Prediction Types by Near Hits[[/h3]]
+            [[p class="skai-panel-desc"]]Which prediction types are generating the most near-match outcomes.[[/p]]
             <?php skaiAdminRenderBarsFriendly($topTypesByNearHit, 'label', 'total', 'skaiAdminN'); ?>
-        </div>
-    </div>
-    <div class="skai-panel" style="margin-top:16px;">
-        <h3>Recent Predictions</h3>
-        <p class="skai-panel-desc">The 15 most recently saved predictions with inferred type, source, and outcome data.</p>
+        [[/div]]
+    [[/div]]
+    [[div class="skai-panel" style="margin-top:16px;"]]
+        [[h3]]Recent Predictions[[/h3]]
+        [[p class="skai-panel-desc"]]The 15 most recently saved predictions with inferred type, source, and outcome data.[[/p]]
         <?php
         skaiAdminRenderSimpleTable(
             array('ID', 'User', 'Lottery', 'Type', 'Source', 'Saved', 'Main Matches', 'Bonus'),
@@ -1626,204 +1626,204 @@ $healthChecks = array(
                 function($r) { return skaiAdminN($r['id']); },
                 function($r) { return skaiAdminE($r['user_name'] ?? ''); },
                 function($r) { return skaiAdminE(skaiAdminInferLotteryDisplay($r)); },
-                function($r) { return '<span class="skai-tag">' . skaiAdminE(skaiAdminInferPredictionType($r)) . '</span>'; },
-                function($r) { return '<span class="skai-muted">' . skaiAdminE(skaiAdminInferSource($r)) . '</span>'; },
+                function($r) { return '[[span class="skai-tag"]]' . skaiAdminE(skaiAdminInferPredictionType($r)) . '[[/span]]'; },
+                function($r) { return '[[span class="skai-muted"]]' . skaiAdminE(skaiAdminInferSource($r)) . '[[/span]]'; },
                 function($r) { return skaiAdminE(isset($r['date_saved']) ? substr((string)$r['date_saved'], 0, 10) : ''); },
-                function($r) { return isset($r['main_matches']) && $r['main_matches'] !== null ? skaiAdminN($r['main_matches']) : '<span class="skai-muted">-</span>'; },
-                function($r) { return isset($r['bonus_matches']) && $r['bonus_matches'] !== null ? skaiAdminN($r['bonus_matches']) : '<span class="skai-muted">-</span>'; },
+                function($r) { return isset($r['main_matches']) && $r['main_matches'] !== null ? skaiAdminN($r['main_matches']) : '[[span class="skai-muted"]]-[[/span]]'; },
+                function($r) { return isset($r['bonus_matches']) && $r['bonus_matches'] !== null ? skaiAdminN($r['bonus_matches']) : '[[span class="skai-muted"]]-[[/span]]'; },
             )
         );
         ?>
-    </div>
-</div>
+    [[/div]]
+[[/div]]
 
-<div class="skai-section-divider"></div>
+[[div class="skai-section-divider"]][[/div]]
 
 <!-- Section 6: Learning and SKAI Insights -->
-<div class="skai-section">
-    <div class="skai-section-head">
-        <div class="skai-section-title-row">
-            <span class="skai-section-num">06</span>
-            <h2 class="skai-section-title">Learning and SKAI Insights</h2>
-        </div>
-        <p class="skai-section-note">SKAI engine learning table activity and data volume tracking.</p>
-    </div>
-    <div class="skai-kpi-row">
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Total SKAI Rows</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($skaiTotalRows); ?></div>
-            <div class="skai-kpi-mini-sub">Across all SKAI tables</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Active Tables</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($skaiActiveTableCount); ?></div>
-            <div class="skai-kpi-mini-sub">Tables with data</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Empty Tables</div>
-            <div class="skai-kpi-mini-value"><?php echo skaiAdminN($skaiEmptyTableCount); ?></div>
-            <div class="skai-kpi-mini-sub">Tables present but empty</div>
-        </div>
-        <div class="skai-kpi-mini">
-            <div class="skai-kpi-mini-label">Tables Tracked</div>
-            <div class="skai-kpi-mini-value"><?php echo count($skaiCounts); ?></div>
-            <div class="skai-kpi-mini-sub">Detected SKAI tables</div>
-        </div>
-    </div>
-    <div class="skai-grid-2">
-        <div class="skai-panel">
-            <h3>SKAI Table Activity (Row Counts)</h3>
-            <p class="skai-panel-desc">Volume of data stored in each SKAI learning and tracking table.</p>
+[[div class="skai-section"]]
+    [[div class="skai-section-head"]]
+        [[div class="skai-section-title-row"]]
+            [[span class="skai-section-num"]]06[[/span]]
+            [[h2 class="skai-section-title"]]Learning and SKAI Insights[[/h2]]
+        [[/div]]
+        [[p class="skai-section-note"]]SKAI engine learning table activity and data volume tracking.[[/p]]
+    [[/div]]
+    [[div class="skai-kpi-row"]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Total SKAI Rows[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($skaiTotalRows); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Across all SKAI tables[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Active Tables[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($skaiActiveTableCount); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Tables with data[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Empty Tables[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo skaiAdminN($skaiEmptyTableCount); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Tables present but empty[[/div]]
+        [[/div]]
+        [[div class="skai-kpi-mini"]]
+            [[div class="skai-kpi-mini-label"]]Tables Tracked[[/div]]
+            [[div class="skai-kpi-mini-value"]]<?php echo count($skaiCounts); ?>[[/div]]
+            [[div class="skai-kpi-mini-sub"]]Detected SKAI tables[[/div]]
+        [[/div]]
+    [[/div]]
+    [[div class="skai-grid-2"]]
+        [[div class="skai-panel"]]
+            [[h3]]SKAI Table Activity (Row Counts)[[/h3]]
+            [[p class="skai-panel-desc"]]Volume of data stored in each SKAI learning and tracking table.[[/p]]
             <?php skaiAdminRenderBarsFriendly($skaiCounts, 'friendly_name', 'total_rows', 'skaiAdminN'); ?>
-        </div>
-        <div class="skai-panel">
-            <h3>Empty SKAI Tables</h3>
-            <p class="skai-panel-desc">SKAI tables that exist in the database but contain no rows yet.</p>
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Empty SKAI Tables[[/h3]]
+            [[p class="skai-panel-desc"]]SKAI tables that exist in the database but contain no rows yet.[[/p]]
             <?php if (empty($skaiEmptyTables)): ?>
-            <div class="skai-empty">All detected SKAI tables contain data.</div>
+            [[div class="skai-empty"]]All detected SKAI tables contain data.[[/div]]
             <?php else: ?>
-            <div class="skai-list-plain">
+            [[div class="skai-list-plain"]]
                 <?php foreach ($skaiEmptyTables as $et): ?>
-                <div class="skai-list-item"><?php echo skaiAdminE($et['friendly_name']); ?> <span class="skai-muted">(<?php echo skaiAdminE($et['table_name']); ?>)</span></div>
+                [[div class="skai-list-item"]]<?php echo skaiAdminE($et['friendly_name']); ?> [[span class="skai-muted"]](<?php echo skaiAdminE($et['table_name']); ?>)[[/span]][[/div]]
                 <?php endforeach; ?>
-            </div>
+            [[/div]]
             <?php endif; ?>
-        </div>
-    </div>
-</div>
+        [[/div]]
+    [[/div]]
+[[/div]]
 
-<div class="skai-section-divider"></div>
+[[div class="skai-section-divider"]][[/div]]
 
 <!-- Section 7: System Health and Data Quality -->
-<div class="skai-section">
-    <div class="skai-section-head">
-        <div class="skai-section-title-row">
-            <span class="skai-section-num">07</span>
-            <h2 class="skai-section-title">System Health and Data Quality</h2>
-        </div>
-        <p class="skai-section-note">Platform health checks, classification quality, and data coverage signals.</p>
-    </div>
-    <div class="skai-grid-2">
-        <div class="skai-panel">
-            <h3>Health Checks</h3>
-            <p class="skai-panel-desc">Key operational signals flagged as OK or needing attention.</p>
-            <div class="skai-health-list">
+[[div class="skai-section"]]
+    [[div class="skai-section-head"]]
+        [[div class="skai-section-title-row"]]
+            [[span class="skai-section-num"]]07[[/span]]
+            [[h2 class="skai-section-title"]]System Health and Data Quality[[/h2]]
+        [[/div]]
+        [[p class="skai-section-note"]]Platform health checks, classification quality, and data coverage signals.[[/p]]
+    [[/div]]
+    [[div class="skai-grid-2"]]
+        [[div class="skai-panel"]]
+            [[h3]]Health Checks[[/h3]]
+            [[p class="skai-panel-desc"]]Key operational signals flagged as OK or needing attention.[[/p]]
+            [[div class="skai-health-list"]]
                 <?php foreach ($healthChecks as $hc): ?>
-                <div class="skai-health-row skai-health-<?php echo skaiAdminE($hc['flag']); ?>">
-                    <span class="skai-health-label"><?php echo skaiAdminE($hc['label']); ?></span>
-                    <span class="skai-health-value"><?php echo skaiAdminN($hc['value']); ?></span>
-                </div>
+                [[div class="skai-health-row skai-health-<?php echo skaiAdminE($hc['flag']); ?>"]]
+                    [[span class="skai-health-label"]]<?php echo skaiAdminE($hc['label']); ?>[[/span]]
+                    [[span class="skai-health-value"]]<?php echo skaiAdminN($hc['value']); ?>[[/span]]
+                [[/div]]
                 <?php endforeach; ?>
-            </div>
-        </div>
-        <div class="skai-grid-2" style="gap:16px; align-content:start;">
-            <div class="skai-panel">
-                <h3>Classification Quality</h3>
-                <p class="skai-panel-desc">How well prediction types can be classified from available fields.</p>
-                <div class="skai-derived-grid" style="grid-template-columns: repeat(1, minmax(0, 1fr));">
-                    <div class="skai-derived-item">
-                        <div class="skai-derived-label">Unknown Pred Types</div>
-                        <div class="skai-derived-value"><?php echo skaiAdminN($dqUnknownPredType); ?></div>
-                    </div>
-                    <div class="skai-derived-item">
-                        <div class="skai-derived-label">Inferrable from Pick Size</div>
-                        <div class="skai-derived-value"><?php echo skaiAdminN($dqInferrablePredType); ?></div>
-                    </div>
-                    <div class="skai-derived-item">
-                        <div class="skai-derived-label">Truly Unclassifiable</div>
-                        <div class="skai-derived-value"><?php echo skaiAdminN($dqTrulyUnclassifiable); ?></div>
-                    </div>
-                </div>
-            </div>
-            <div class="skai-panel">
-                <h3>Data Coverage</h3>
-                <p class="skai-panel-desc">How much prediction data has match outcome results attached.</p>
-                <div class="skai-derived-grid" style="grid-template-columns: repeat(1, minmax(0, 1fr));">
-                    <div class="skai-derived-item">
-                        <div class="skai-derived-label">With Match Data</div>
-                        <div class="skai-derived-value"><?php echo skaiAdminN($recordsWithMatchData); ?></div>
-                    </div>
-                    <div class="skai-derived-item">
-                        <div class="skai-derived-label">Without Match Data</div>
-                        <div class="skai-derived-value"><?php echo skaiAdminN($recordsWithoutMatchData); ?></div>
-                    </div>
-                    <div class="skai-derived-item">
-                        <div class="skai-derived-label">Coverage Rate</div>
-                        <div class="skai-derived-value"><?php echo skaiAdminE($derived['verification_rate_pct']); ?></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+            [[/div]]
+        [[/div]]
+        [[div class="skai-grid-2" style="gap:16px; align-content:start;"]]
+            [[div class="skai-panel"]]
+                [[h3]]Classification Quality[[/h3]]
+                [[p class="skai-panel-desc"]]How well prediction types can be classified from available fields.[[/p]]
+                [[div class="skai-derived-grid" style="grid-template-columns: repeat(1, minmax(0, 1fr));"]]
+                    [[div class="skai-derived-item"]]
+                        [[div class="skai-derived-label"]]Unknown Pred Types[[/div]]
+                        [[div class="skai-derived-value"]]<?php echo skaiAdminN($dqUnknownPredType); ?>[[/div]]
+                    [[/div]]
+                    [[div class="skai-derived-item"]]
+                        [[div class="skai-derived-label"]]Inferrable from Pick Size[[/div]]
+                        [[div class="skai-derived-value"]]<?php echo skaiAdminN($dqInferrablePredType); ?>[[/div]]
+                    [[/div]]
+                    [[div class="skai-derived-item"]]
+                        [[div class="skai-derived-label"]]Truly Unclassifiable[[/div]]
+                        [[div class="skai-derived-value"]]<?php echo skaiAdminN($dqTrulyUnclassifiable); ?>[[/div]]
+                    [[/div]]
+                [[/div]]
+            [[/div]]
+            [[div class="skai-panel"]]
+                [[h3]]Data Coverage[[/h3]]
+                [[p class="skai-panel-desc"]]How much prediction data has match outcome results attached.[[/p]]
+                [[div class="skai-derived-grid" style="grid-template-columns: repeat(1, minmax(0, 1fr));"]]
+                    [[div class="skai-derived-item"]]
+                        [[div class="skai-derived-label"]]With Match Data[[/div]]
+                        [[div class="skai-derived-value"]]<?php echo skaiAdminN($recordsWithMatchData); ?>[[/div]]
+                    [[/div]]
+                    [[div class="skai-derived-item"]]
+                        [[div class="skai-derived-label"]]Without Match Data[[/div]]
+                        [[div class="skai-derived-value"]]<?php echo skaiAdminN($recordsWithoutMatchData); ?>[[/div]]
+                    [[/div]]
+                    [[div class="skai-derived-item"]]
+                        [[div class="skai-derived-label"]]Coverage Rate[[/div]]
+                        [[div class="skai-derived-value"]]<?php echo skaiAdminE($derived['verification_rate_pct']); ?>[[/div]]
+                    [[/div]]
+                [[/div]]
+            [[/div]]
+        [[/div]]
+    [[/div]]
+[[/div]]
 
-<div class="skai-section-divider"></div>
+[[div class="skai-section-divider"]][[/div]]
 
 <!-- Section 8: Technical Detail -->
-<div class="skai-section">
-    <div class="skai-section-head">
-        <div class="skai-section-title-row">
-            <span class="skai-section-num">08</span>
-            <h2 class="skai-section-title">Technical Detail</h2>
-        </div>
-        <p class="skai-section-note">SKAI engine run modes, strategies, risk profiles, and table-level data breakdown.</p>
-    </div>
-    <div class="skai-grid-3">
-        <div class="skai-panel">
-            <h3>Run Mode Breakdown</h3>
-            <p class="skai-panel-desc">Distribution of SKAI run modes across all predictions.</p>
+[[div class="skai-section"]]
+    [[div class="skai-section-head"]]
+        [[div class="skai-section-title-row"]]
+            [[span class="skai-section-num"]]08[[/span]]
+            [[h2 class="skai-section-title"]]Technical Detail[[/h2]]
+        [[/div]]
+        [[p class="skai-section-note"]]SKAI engine run modes, strategies, risk profiles, and table-level data breakdown.[[/p]]
+    [[/div]]
+    [[div class="skai-grid-3"]]
+        [[div class="skai-panel"]]
+            [[h3]]Run Mode Breakdown[[/h3]]
+            [[p class="skai-panel-desc"]]Distribution of SKAI run modes across all predictions.[[/p]]
             <?php skaiAdminRenderBarsWithPct($runModes, 'label', 'total', $summary['total_predictions']); ?>
-        </div>
-        <div class="skai-panel">
-            <h3>Strategy Breakdown</h3>
-            <p class="skai-panel-desc">Distribution of prediction strategies used by the SKAI engine.</p>
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Strategy Breakdown[[/h3]]
+            [[p class="skai-panel-desc"]]Distribution of prediction strategies used by the SKAI engine.[[/p]]
             <?php skaiAdminRenderBarsWithPct($strategies, 'label', 'total', $summary['total_predictions']); ?>
-        </div>
-        <div class="skai-panel">
-            <h3>Risk Profile Breakdown</h3>
-            <p class="skai-panel-desc">Distribution of risk profile settings applied to predictions.</p>
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Risk Profile Breakdown[[/h3]]
+            [[p class="skai-panel-desc"]]Distribution of risk profile settings applied to predictions.[[/p]]
             <?php skaiAdminRenderBarsWithPct($riskProfiles, 'label', 'total', $summary['total_predictions']); ?>
-        </div>
-    </div>
-    <div class="skai-grid-2" style="margin-top:16px;">
-        <div class="skai-panel">
-            <h3>SKAI Table Row Counts</h3>
-            <p class="skai-panel-desc">Exact row counts for all detected SKAI tracking and learning tables.</p>
+        [[/div]]
+    [[/div]]
+    [[div class="skai-grid-2" style="margin-top:16px;"]]
+        [[div class="skai-panel"]]
+            [[h3]]SKAI Table Row Counts[[/h3]]
+            [[p class="skai-panel-desc"]]Exact row counts for all detected SKAI tracking and learning tables.[[/p]]
             <?php
             skaiAdminRenderSimpleTable(
                 array('Table', 'Friendly Name', 'Row Count'),
                 $skaiCounts,
                 array(
-                    function($r) { return '<span class="skai-muted" style="font-size:11px;">' . skaiAdminE($r['table_name']) . '</span>'; },
+                    function($r) { return '[[span class="skai-muted" style="font-size:11px;"]]' . skaiAdminE($r['table_name']) . '[[/span]]'; },
                     function($r) { return skaiAdminE($r['friendly_name']); },
-                    function($r) { return '<strong>' . skaiAdminN($r['total_rows']) . '</strong>'; },
+                    function($r) { return '[[strong]]' . skaiAdminN($r['total_rows']) . '[[/strong]]'; },
                 )
             );
             ?>
-        </div>
-        <div class="skai-panel">
-            <h3>Dashboard Notes</h3>
-            <p class="skai-panel-desc">Context and methodology for interpreting these metrics.</p>
-            <div class="skai-footnote">
-                <strong>Data Quality:</strong> Prediction types, sources, and families are inferred from multiple fields
+        [[/div]]
+        [[div class="skai-panel"]]
+            [[h3]]Dashboard Notes[[/h3]]
+            [[p class="skai-panel-desc"]]Context and methodology for interpreting these metrics.[[/p]]
+            [[div class="skai-footnote"]]
+                [[strong]]Data Quality:[[/strong]] Prediction types, sources, and families are inferred from multiple fields
                 using a cascade logic. Records missing primary classification fields are inferred from pick size,
-                family indicators, and renderer hints before being marked as uncategorized.<br><br>
-                <strong>Verification:</strong> A prediction is considered verified if any of main_matches,
+                family indicators, and renderer hints before being marked as uncategorized.[[br]][[br]]
+                [[strong]]Verification:[[/strong]] A prediction is considered verified if any of main_matches,
                 bonus_matches, or matched_numbers fields contain non-null data. Stale records are predictions
-                where target_draw_date has passed but no verification data exists.<br><br>
-                <strong>Hit Rate:</strong> Full hit rate is computed as full hits divided by verified predictions.
+                where target_draw_date has passed but no verification data exists.[[br]][[br]]
+                [[strong]]Hit Rate:[[/strong]] Full hit rate is computed as full hits divided by verified predictions.
                 Near hit rate follows the same logic using near hit counts. Both rates reflect outcome quality
-                of predictions that have been through the draw cycle.<br><br>
-                <strong>SKAI Tables:</strong> Fourteen SKAI engine tables are tracked. Counts of zero indicate
+                of predictions that have been through the draw cycle.[[br]][[br]]
+                [[strong]]SKAI Tables:[[/strong]] Fourteen SKAI engine tables are tracked. Counts of zero indicate
                 the table exists but the SKAI engine has not yet written data to it. Tables not present in the
-                database are simply omitted from this view.<br><br>
-                <strong>Revenue:</strong> Revenue figures reflect active subscriptions (published=1, to_date in future)
+                database are simply omitted from this view.[[br]][[br]]
+                [[strong]]Revenue:[[/strong]] Revenue figures reflect active subscriptions (published=1, to_date in future)
                 and use payment_amount if available, otherwise amount. All figures are direct database aggregates
                 with no caching.
-            </div>
-        </div>
-    </div>
-</div>
+            [[/div]]
+        [[/div]]
+    [[/div]]
+[[/div]]
 
-</div>
+[[/div]]
 [[/source]]
